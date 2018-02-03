@@ -8,10 +8,10 @@ import tensorboard
 tf.app.flags.DEFINE_bool('is_training', False,
                          'if is training')
 
-tf.app.flags.DEFINE_integer('max_epoch', 3,
+tf.app.flags.DEFINE_integer('max_epoch', 50,
                             'max epoch in training')
 
-tf.app.flags.DEFINE_integer('max_step', 10,
+tf.app.flags.DEFINE_integer('max_step', 250,
                             'maximum steps in 1 epoch')
 
 tf.app.flags.DEFINE_float('momentum', 0.9,
@@ -29,23 +29,23 @@ tf.app.flags.DEFINE_string('train_log_dir', './data/train_log/',
 tf.app.flags.DEFINE_string('eval_log_dir', './data/eval_log',
                            'directory to save evaluation logs')
 
-tf.app.flags.DEFINE_integer('log_frequency', 1,
+tf.app.flags.DEFINE_integer('log_frequency', 5,
                             'frequency of logging by steps')
 
-tf.app.flags.DEFINE_integer('eval_frequency', 10,
+tf.app.flags.DEFINE_integer('eval_frequency', 10000000000,
                             'frequency of evaluation by steps')
 
-tf.app.flags.DEFINE_string('ckpt_dir', './data/checkpoints/fine_tune_ckpt/model2.ckpt',
+tf.app.flags.DEFINE_string('ckpt_dir', './data/checkpoints/fine_tune_ckpt/model0.ckpt',
                            'directory to save checkpoint files')
 
 tf.app.flags.DEFINE_integer('ckpt_frq', 1,
-                            'frequency of saving checkpoint')
+                            'frequency of saving checkpoint by epoch')
 
 tf.app.flags.DEFINE_string('pre_train_ckpt', './data/checkpoints/flow_imagenet/model.ckpt',
                            'path to pre-trained checkpoints')
 
 # -----------------------------set data--------------------------------#
-tf.app.flags.DEFINE_integer('batch_size', 3,
+tf.app.flags.DEFINE_integer('batch_size', 16,
                             'batch size in training')
 
 tf.app.flags.DEFINE_integer('frame_num', 10,

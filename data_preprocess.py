@@ -5,7 +5,7 @@ import skvideo.io as sv
 from matplotlib import pyplot as pl
 
 
-def get_optical_flow(file_name, size, max_length=None):
+def get_optical_flow(file_name, size, max_length=200):
     if not os.path.exists(file_name):
         raise IOError
     # cap = cv2.VideoCapture(file_name)
@@ -19,26 +19,25 @@ def get_optical_flow(file_name, size, max_length=None):
         if frm_cnt >= max_length:
             break
 
-        frame = cropper(frame, 224)
+        frame = _cropper(frame, 224)
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         if pre_frame is None:
             pre_frame = frame
             continue
 
-        optical_flow[frm_cnt] = cal_TVL1(pre_frame, frame)
+        optical_flow[frm_cnt] = _cal_TVL1(pre_frame, frame)
         frm_cnt += 1
         pre_frame = frame
 
-        # print(frm_cnt)
+        print(frm_cnt)
 
-    for i in range(frm_cnt, max_length):
-        frm_cnt += 1
-        optical_flow[frm_cnt] = optical_flow[i]
-
-    return optical_flow
+        padded_opt_flow = _padder(optical_flow, frm_cnt)
 
 
-def cropper(frame, size):
+    return padded_opt_flow
+
+
+def _cropper(frame, size):
     which_edge = np.argmin(frame.shape[0:2])
 
     if not which_edge:
@@ -66,11 +65,20 @@ def cropper(frame, size):
         return frame_resize[int(top_bound):int(top_bound)+224, :]
 
 
-def cal_TVL1(pframe, frame):
-    # tvl1 = cv2.cuda.OpticalFlowDual_TVL1.create(0.25, 0.15, 0.3, 5, 5, 0.01, 300, 0.8, 0.0, False)
-    tvl1 = cv2.DualTVL1OpticalFlow()
-    tvl1 = tvl1.create(0.25, 0.15, 0.3, 5, 5, 0.01, 30, 10, 0.8, 0.0, False)
+def _cal_TVL1(pframe, frame):
+    # alternative method to call DualTVL1 in opencv-contrib-python from pip
+    # tvl1 = cv2.DualTVL1OpticalFlow()
+    # tvl1 = tvl1.create(0.25, 0.15, 0.3, 5, 5, 0.01, 30, 10, 0.8, 0.0, False)
+    tvl1 = cv2.DualTVL1OpticalFlow_create(0.25, 0.15, 0.3, 5, 5, 0.01, 30, 10, 0.8, 0.0, False)
     opt_flow = tvl1.calc(pframe, frame, None)
     return opt_flow
 
-# get_optical_flow('/home/g8682/PycharmProjects/kinetics-i3d/data/train/0/6510936896090712631.mp4', 224, 3)
+def _padder(opt_flow, frame_num):
+    end = opt_flow.shape[0]
+
+    for i in range(frame_num, end):
+        opt_flow[i] = opt_flow[(i-frame_num)]
+
+    return opt_flow
+
+# get_optical_flow('/home/g8682/PycharmProjects/kinetics-i3d/data/train/0/6510936896090712631.mp4', 224)
