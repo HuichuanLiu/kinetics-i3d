@@ -2,14 +2,48 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1c81f901-9991-471f-9835-a80abd0270b1" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/bp.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/data/train/1/6512010272837485793.mp4" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/data_preprocess.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/finetune.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/t.py" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517594505.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517594688.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517625700.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517625795.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517625823.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517625878.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517625907.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517625971.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626073.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626125.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626160.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626474.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626571.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626700.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626808.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626875.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517627189.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517627321.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517627647.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517627813.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517627892.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517627934.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517628042.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517628567.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517629069.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517629245.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517629597.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517629687.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517630515.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517630803.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517631200.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517631269.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517631337.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517636053.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517636119.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517636160.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517642539.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517642560.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517642615.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517642745.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517642900.g8682-H270-HD3" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517643279.g8682-H270-HD3" afterPath="" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -187,13 +221,6 @@
               <item name="kinetics-i3d" type="b2602c69:ProjectViewProjectNode" />
               <item name="kinetics-i3d" type="462c0819:PsiDirectoryNode" />
               <item name="data" type="462c0819:PsiDirectoryNode" />
-              <item name="checkpoints" type="462c0819:PsiDirectoryNode" />
-              <item name="flow_imagenet" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="kinetics-i3d" type="b2602c69:ProjectViewProjectNode" />
-              <item name="kinetics-i3d" type="462c0819:PsiDirectoryNode" />
-              <item name="data" type="462c0819:PsiDirectoryNode" />
               <item name="eval" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -316,9 +343,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="292" y="24" width="1857" height="1092" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18867925" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18867925" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -342,13 +368,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/t.py</url>
-          <line>15</line>
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
-      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
