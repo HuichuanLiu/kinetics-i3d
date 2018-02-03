@@ -1,50 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1c81f901-9991-471f-9835-a80abd0270b1" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517594505.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517594688.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517625700.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517625795.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517625823.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517625878.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517625907.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517625971.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626073.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626125.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626160.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626474.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626571.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626700.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626808.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517626875.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517627189.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517627321.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517627647.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517627813.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517627892.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517627934.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517628042.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517628567.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517629069.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517629245.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517629597.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517629687.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517630515.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517630803.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517631200.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517631269.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517631337.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517636053.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517636119.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517636160.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517642539.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517642560.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517642615.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517642745.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517642900.g8682-H270-HD3" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/data/train_log/events.out.tfevents.1517643279.g8682-H270-HD3" afterPath="" />
-    </list>
+    <list default="true" id="1c81f901-9991-471f-9835-a80abd0270b1" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
