@@ -2,3 +2,4 @@
 .DS_Store
 *.mp4
 model.ckpt.*
+events.out.tfevents.*
