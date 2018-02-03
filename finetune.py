@@ -2,21 +2,25 @@ import tensorflow as tf
 from data_preprocess import *
 import i3d
 import tensorflow.contrib.slim as slim
+import tensorboard
 
 # ---------------------------set training------------------------------#
-tf.app.flags.DEFINE_integer('max_epoch', 100,
+tf.app.flags.DEFINE_bool('is_training', False,
+                         'if is training')
+
+tf.app.flags.DEFINE_integer('max_epoch', 3,
                             'max epoch in training')
 
-tf.app.flags.DEFINE_integer('max_step', 1000,
+tf.app.flags.DEFINE_integer('max_step', 10,
                             'maximum steps in 1 epoch')
 
 tf.app.flags.DEFINE_float('momentum', 0.9,
                           'momentum value for momentum optimizer')
 
-tf.app.flags.DEFINE_float('i3d_lr', 1e5,
+tf.app.flags.DEFINE_float('i3d_lr', 1e-5,
                           'learning rate for pre-trained i3d payers')
 
-tf.app.flags.DEFINE_float('lgt', 1e-3,
+tf.app.flags.DEFINE_float('logits_lr', 1e-3,
                           'learning rate for final logit layer')
 
 tf.app.flags.DEFINE_string('train_log_dir', './data/train_log/',
@@ -25,102 +29,158 @@ tf.app.flags.DEFINE_string('train_log_dir', './data/train_log/',
 tf.app.flags.DEFINE_string('eval_log_dir', './data/eval_log',
                            'directory to save evaluation logs')
 
-tf.app.flags.DEFINE_integer('log_frequency', 10,
+tf.app.flags.DEFINE_integer('log_frequency', 1,
                             'frequency of logging by steps')
 
-tf.app.flags.DEFINE_string('ckpt_dir', './checkpoints',
+tf.app.flags.DEFINE_integer('eval_frequency', 10,
+                            'frequency of evaluation by steps')
+
+tf.app.flags.DEFINE_string('ckpt_dir', './data/checkpoints/fine_tune_ckpt/model2.ckpt',
                            'directory to save checkpoint files')
 
 tf.app.flags.DEFINE_integer('ckpt_frq', 1,
                             'frequency of saving checkpoint')
 
-tf.app.flags.DEFINE_string('pre_train_ckpt', './data/checkpoint/flow_imagenet/model.ckpt',
+tf.app.flags.DEFINE_string('pre_train_ckpt', './data/checkpoints/flow_imagenet/model.ckpt',
                            'path to pre-trained checkpoints')
 
 # -----------------------------set data--------------------------------#
-tf.app.flags.DEFINE_integer('batch_size', 16,
+tf.app.flags.DEFINE_integer('batch_size', 3,
                             'batch size in training')
 
-tf.app.flags.DEFINE_integer('frame_num', 200,
+tf.app.flags.DEFINE_integer('frame_num', 10,
                             'frame_num in each sample')
 
-tf.app.flags.DEFINE_string('train_data', './data/train_samples',
+tf.app.flags.DEFINE_string('train_data', './data/train',
                            'directory to save train_samples')
 
-tf.app.flags.DEFINE_integer('num_class', 2,
+tf.app.flags.DEFINE_string('eval_data', './data/eval',
+                           'directory to save eval_samples')
+
+tf.app.flags.DEFINE_integer('num_class', 1,
                             'number of classes in labels')
-#-----------------------------set finished ---------------------------#
-FLAGS = tf.app.flags
+# -----------------------------set finished ---------------------------#
+FLAGS = tf.flags.FLAGS
 
-def train():
-    global_step = 0
+
+def run_model():
+    global_step = tf.constant(0, dtype=tf.int64)
     # Flow input has only 2 channels.
-    input_flow = tf.placeholder(tf.float32,shape=(FLAGS.batch_size, FLAGS.frame_num, 224, 224, 2))
-    input_labels = tf.placeholder(tf.int32, shape=(FLAGS.batch_size, FLAGS.num_class))
+    input_flow = tf.placeholder(tf.float32, shape=(FLAGS.batch_size, FLAGS.frame_num, 224, 224, 2))
+    input_labels = tf.placeholder(tf.float32, shape=(FLAGS.batch_size, FLAGS.num_class))
 
-    #----------------------restore and edit graph--------------------------#
+    # ----------------------restore and edit graph--------------------------#
     tf.logging.set_verbosity(tf.logging.INFO)
 
     with tf.variable_scope('Flow'):
         # resotre flow model
         flow_model = i3d.InceptionI3d(FLAGS.num_class, spatial_squeeze=True, final_endpoint='Logits')
-        flow_logits, _ = flow_model(input_flow, is_training=True, dropout_keep_prob=0.5)
 
-        loss = slim.losses.sigmoid_cross_entropy(flow_logits, input_labels)
+        if FLAGS.is_training:
+            flow_logits, _ = flow_model(input_flow, is_training=True, dropout_keep_prob=0.5)
+            loss = slim.losses.sigmoid_cross_entropy(flow_logits, input_labels)
+            predictions = tf.round(tf.nn.sigmoid(flow_logits))
+            correct_prediction = tf.equal(predictions, input_labels)
+            accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+            recall, update_recall = tf.metrics.recall(predictions=predictions, labels=input_labels)
+            tf.summary.scalar('loss', loss)
+            tf.summary.scalar('accuracy', accuracy)
+            tf.summary.scalar('recall', recall)
 
+            var_to_restore = slim.get_variables_to_restore(exclude=['Flow/inception_i3d/Logits'])
+            var_to_retrain = slim.get_variables_to_restore(include=['Flow/inception_i3d/Logits'])
+            flow_saver = tf.train.Saver(var_list=var_to_restore, reshape=True)
 
-    #-------------------------redefine training----------------------------#
-    var_to_restore = slim.get_variables_to_restore(exclude=["Logits,RGB"])
-    var_to_retrain=[]
-    flow_saver = tf.train.Saver(var_list=var_to_restore, reshape=True)
+            train_i3d = slim.train.MomentumOptimizer(FLAGS.i3d_lr, FLAGS.momentum).minimize(loss,
+                                                                                            var_list=var_to_restore)
+            train_logits = slim.train.MomentumOptimizer(FLAGS.logits_lr, FLAGS.momentum).minimize(loss,
+                                                                                                  var_list=var_to_retrain)
+            train_op = tf.group(train_i3d, train_logits)
 
-    train_i3d = slim.train.MomentumOptimizer(FLAGS.i3d_lr,FLAGS.momentum).minimize(flow_logits, var_list=var_to_restore, global_step=global_step)
-    train_logits = slim.train.MomentumOptimizer(FLAGS.logit_lr, FLAGS.momentum).minimize(flow_logits, var_list=var_to_retrain, global_step = global_step)
+            data_dir = FLAGS.train_data
+        else:
+            flow_logits, _ = flow_model(input_flow, is_training=False, dropout_keep_prob=1)
+            var_to_restore = slim.get_variables_to_restore(exclude=['RGB'])
+            flow_saver = tf.train.Saver(var_list=var_to_restore, reshape=True)
 
-    train_op = tf.group(train_i3d,train_logits)
+            predictions = tf.round(tf.nn.sigmoid(flow_logits))
+            correct_prediction = tf.equal(predictions, input_labels)
+            accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+            recall, update_recall = slim.metrics.streaming_recall(predictions=predictions, labels=input_labels)
+            precision, update_precision = slim.metrics.streaming_precision(labels=input_labels, predictions=predictions)
+            tpr, update_tpr = slim.metrics.streaming_true_positives(labels=input_labels, predictions=predictions)
+            # conf_mat, update_cm = slim.metrics.confusion_matrix(labels=input_labels, predictions=predictions)
+            tf.summary.scalar('accuracy', accuracy)
+            tf.summary.scalar('recall', recall)
+            tf.summary.scalar('precision', precision)
+            tf.summary.scalar('tpr', tpr)
+            # tf.summary.scalar('confused_matrix', conf_mat)
 
-    #-------------------------metrics in training--------------------------#
+            up_date_metrics = tf.group(update_recall, update_recall, update_precision)
 
-    predictions = tf.nn.sigmoid(flow_logits)
-    accuracy = slim.metrics.accuracy(predictions,input_labels)
+            data_dir = FLAGS.eval_data
 
-    optical_flow = []
-    labels = []
+    # -------------------------data set preparing---------------------------#
 
-    #-------------------------data set preparing---------------------------#
+    filenames, labels = _get_files(data_dir)
+    FLAGS.max_step = min(len(labels) // FLAGS.batch_size, FLAGS.max_step)
+    FLAGS.max_step = (FLAGS.max_step - FLAGS.max_step % FLAGS.batch_size) / FLAGS.batch_size
+    filenames = filenames[0:FLAGS.max_step * FLAGS.batch_size]
+    labels = labels[0:FLAGS.max_step * FLAGS.batch_size]
 
-    filenames, labels = _get_files('./data/train')
-
-    dataset = tf.data.Dataset.from_tensor_slices((filenames, labels))
-    dataset = dataset.map(
-        lambda filename, label: tuple(tf.py_func(
-            _calc_opt_flow, [filename, label], [tf.float64, label.dtype])))
-    dataset = dataset.map(_calc_opt_flow)
-    dataset = dataset.batch(16)
+    dataset = tf.contrib.data.Dataset.from_tensor_slices((filenames, labels))
+    dataset = dataset.map(lambda filename, label:
+                          tuple(tf.py_func(_calc_opt_flow, [filename, label], [tf.float64, label.dtype])))
+    dataset = dataset.batch(FLAGS.batch_size)
     iterator = dataset.make_initializable_iterator()
-    var_init = tf.initialize_all_variables()
+
+    var_init = tf.group(tf.initialize_local_variables(), tf.initialize_all_variables())
+    merged = tf.summary.merge_all()
 
     with tf.Session() as sess:
+
         sess.run(var_init)
-        flow_saver.restore(sess, FLAGS.pre_train_ckpt)
-        sess.run(iterator.initializer)
+
+        if FLAGS.is_training:
+            flow_saver.restore(sess, FLAGS.pre_train_ckpt)
+            writer = tf.summary.FileWriter(FLAGS.train_log_dir, sess.graph)
+        else:
+            flow_saver.restore(sess, FLAGS.ckpt_dir)
+            writer = tf.summary.FileWriter(FLAGS.eval_log_dir, sess.graph)
+
+        next_batch = iterator.get_next()
+
+        if not FLAGS.is_training:
+            FLAGS.epoch = 1
 
         for epoch in range(FLAGS.max_epoch):
+            sess.run(iterator.initializer)
             for step in range(FLAGS.max_step):
-                sess.run(train_op, feed_dict={input_flow:optical_flow,input_labels:labels})
-                if step%FLAGS.log_seq == 0:
-                    pass
+                print(step)
+                optical_flow, label = sess.run(next_batch)
 
-            if epoch%FLAGS.eval_seq == 0:
-                evaluation()
+                if FLAGS.is_training:
+                    sess.run(train_op,
+                             feed_dict={input_flow: optical_flow, input_labels: label})
+                else:
+                    sess.run([accuracy, up_date_metrics],
+                             feed_dict={input_flow: optical_flow, input_labels: label})
+
+                if step % FLAGS.log_frequency == 0:
+                    rs = sess.run(merged,
+                                  feed_dict={input_flow: optical_flow, input_labels: label})
+                    writer.add_summary(rs, step)
+
+            if FLAGS.is_training and epoch % FLAGS.ckpt_frq == 0:
+                var_to_store = slim.get_variables_to_restore(exclude=[])
+                flow_saver = tf.train.Saver(var_list=var_to_store, reshape=True)
+                flow_saver.save(sess, './data/checkpoints/fine_tune_ckpt/model%d.ckpt' % epoch)
 
 
-def evaluation():
-    pass
-
-def _calc_opt_flow(filename, label):
-    optical_flow = get_optical_flow(filename)
+def _calc_opt_flow(filename, label, frame_num=FLAGS.frame_num):
+    optical_flow = get_optical_flow(filename, 224, frame_num)
     return optical_flow, label
+
 
 def _get_files(dir_path):
     if not os.path.exists(dir_path):
@@ -128,14 +188,19 @@ def _get_files(dir_path):
 
     images = []
     labels = []
-    for root, dirs, files in os.walk(dir_path+'/0'):
+    for root, dirs, files in os.walk(dir_path + '/0'):
         for file in files:
-            images.append("%s/0/%s" % (dir_path,file))
-            labels.append([0])
+            images.append("%s/0/%s" % (dir_path, file))
+            labels.append([0.])
 
-    for root, dirs, files in os.walk(dir_path+'/1'):
+    for root, dirs, files in os.walk(dir_path + '/1'):
         for file in files:
-            images.append("%s/1/%s" % (dir_path,file))
-            labels.append([1])
+            images.append("%s/1/%s" % (dir_path, file))
+            labels.append([1.])
 
     return images, labels
+
+
+run_model()
+# if __name__ == '__main__':
+#     tf.app.run(run_model)

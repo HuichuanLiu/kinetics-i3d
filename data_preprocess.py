@@ -1,59 +1,76 @@
 import cv2
 import os
 import numpy as np
+import skvideo.io as sv
+from matplotlib import pyplot as pl
 
 
 def get_optical_flow(file_name, size, max_length=None):
     if not os.path.exists(file_name):
         raise IOError
-    file_name='/home/g8682/PycharmProjects/kinetics-i3d/data/6512010272837485791.mp4'
-    cap = cv2.VideoCapture(file_name)
-    a = cap.get(cv2.CAP_PROP_FRAME_COUNT)
-    ret, pre_frame = cap.read()
-    frame = None
+    # cap = cv2.VideoCapture(file_name)
+    # ret, pre_frame = cap.read()
+    video = sv.vreader(file_name)
     frm_cnt = 0  # use to record frame number (i.e. length)
 
-    optical_flow = np.zeros((1, max_length, size, size, 2))
+    optical_flow = np.zeros((max_length, size, size, 2))
+    pre_frame = None
+    for frame in video:
+        if frm_cnt >= max_length:
+            break
 
-    while ret and frm_cnt < max_length:
-        ret, frame = cap.read()
+        frame = cropper(frame, 224)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        if pre_frame is None:
+            pre_frame = frame
+            continue
+
         optical_flow[frm_cnt] = cal_TVL1(pre_frame, frame)
         frm_cnt += 1
+        pre_frame = frame
+
+        # print(frm_cnt)
 
     for i in range(frm_cnt, max_length):
         frm_cnt += 1
         optical_flow[frm_cnt] = optical_flow[i]
+
+    return optical_flow
 
 
 def cropper(frame, size):
     which_edge = np.argmin(frame.shape[0:2])
 
     if not which_edge:
+        width = frame.shape[1] * 1.0 * size / frame.shape[0]
         height = size
-        width = frame.shape[1] * 1.0 * height / size
     else:
+        height = frame.shape[0] * 1.0 * size / frame.shape[1]
         width = size
-        height = frame.shape[0] * 1.0 * width / size
 
-    frame_resize = cv2.resize(frame, (height, width))
+    frame_resize = cv2.resize(frame, (int(width), int(height)))
 
-    if which_edge:
+    if not which_edge:
         left_bound = (width - size) / 2.0
         right_bound = (width + size / 2.0)
         if right_bound - left_bound != size:
             right_bound += 1
-        return frame_resize[:, left_bound:right_bound]
+        # return frame_resize[:, int(left_bound):int(right_bound)]
+        return frame_resize[:, int(left_bound):int(left_bound)+224]
     else:
         top_bound = (height - size) / 2.0
         bot_bound = (height + size) / 2.0
         if bot_bound - top_bound != size:
             bot_bound += 1
-        return frame_resize[top_bound:bot_bound, :]
+        # return frame_resize[int(top_bound):int(bot_bound), :]
+        return frame_resize[int(top_bound):int(top_bound)+224, :]
 
 
 def cal_TVL1(pframe, frame):
-    tvl1 = cv2.cuda.OpticalFlowDual_TVL1.create(0.25, 0.15, 0.3, 5, 5, 0.01, 300, 0.8, 0.0, False)
-    opt_flow = tvl1.calc(pframe, frame)
+    # tvl1 = cv2.cuda.OpticalFlowDual_TVL1.create(0.25, 0.15, 0.3, 5, 5, 0.01, 300, 0.8, 0.0, False)
+    tvl1 = cv2.DualTVL1OpticalFlow()
+    tvl1 = tvl1.create(0.25, 0.15, 0.3, 5, 5, 0.01, 30, 10, 0.8, 0.0, False)
+    opt_flow = tvl1.calc(pframe, frame, None)
     return opt_flow
 
-get_optical_flow('./data/6512010272837485791.mp4', 224, 101)
+# get_optical_flow('/home/g8682/PycharmProjects/kinetics-i3d/data/train/0/6510936896090712631.mp4', 224, 3)
