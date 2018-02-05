@@ -5,7 +5,7 @@ import tensorflow.contrib.slim as slim
 import tensorboard
 
 # ---------------------------set training------------------------------#
-tf.app.flags.DEFINE_bool('is_training', False,
+tf.app.flags.DEFINE_bool('is_training', True,
                          'if is training')
 
 tf.app.flags.DEFINE_integer('max_epoch', 50,
@@ -44,11 +44,19 @@ tf.app.flags.DEFINE_integer('ckpt_frq', 1,
 tf.app.flags.DEFINE_string('pre_train_ckpt', './data/checkpoints/flow_imagenet/model.ckpt',
                            'path to pre-trained checkpoints')
 
+tf.app.flags.DEFINE_float('i3d_weight_decay', 1e-7,
+                          'weight decay for i3d layers')
+
+tf.app.flags.DEFINE_float('logits_weight_decay', 1e-7,
+                          'weight decay for i3d layers')
+
+
+
 # -----------------------------set data--------------------------------#
 tf.app.flags.DEFINE_integer('batch_size', 16,
                             'batch size in training')
 
-tf.app.flags.DEFINE_integer('frame_num', 10,
+tf.app.flags.DEFINE_integer('frame_num', 200,
                             'frame_num in each sample')
 
 tf.app.flags.DEFINE_string('train_data', './data/train',
@@ -79,6 +87,7 @@ def run_model():
         if FLAGS.is_training:
             flow_logits, _ = flow_model(input_flow, is_training=True, dropout_keep_prob=0.5)
             loss = slim.losses.sigmoid_cross_entropy(flow_logits, input_labels)
+
             predictions = tf.round(tf.nn.sigmoid(flow_logits))
             correct_prediction = tf.equal(predictions, input_labels)
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
@@ -91,10 +100,14 @@ def run_model():
             var_to_retrain = slim.get_variables_to_restore(include=['Flow/inception_i3d/Logits'])
             flow_saver = tf.train.Saver(var_list=var_to_restore, reshape=True)
 
-            train_i3d = slim.train.MomentumOptimizer(FLAGS.i3d_lr, FLAGS.momentum).minimize(loss,
-                                                                                            var_list=var_to_restore)
-            train_logits = slim.train.MomentumOptimizer(FLAGS.logits_lr, FLAGS.momentum).minimize(loss,
-                                                                                                  var_list=var_to_retrain)
+            global_step = tf.Variable(0)
+            i3d_lr = tf.train.exponential_decay(FLAGS.i3d_lr, global_step=global_step, decay_steps=FLAGS.max_step, decay_rate=FLAGS.i3d_weight_decay)
+            logit_lr = tf.train.exponential_decay(FLAGS.logits_lr, global_step=global_step, decay_steps=FLAGS.max_step, decay_rate=FLAGS.logits_weight_decay)
+            train_i3d = slim.train.MomentumOptimizer(i3d_lr, FLAGS.momentum).\
+                minimize(loss, var_list=var_to_restore, global_step = global_step)
+
+            train_logits = slim.train.MomentumOptimizer(logit_lr, FLAGS.momentum).\
+                minimize(loss, var_list=var_to_retrain, global_step = global_step)
             train_op = tf.group(train_i3d, train_logits)
 
             data_dir = FLAGS.train_data
